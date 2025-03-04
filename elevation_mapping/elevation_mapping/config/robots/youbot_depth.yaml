@@ -1,0 +1,19 @@
+input_sources:
+  rgbd:
+    type: pointcloud
+    topic: /init_map/output
+    queue_size: 1
+    publish_on_update: true
+    sensor_processor:
+      type: structured_light
+
+
+  
+map_frame_id: "base_link"
+robot_base_frame_id: "base_link"
+robot_pose_with_covariance_topic: "" # Leaving this empty skipps pose covariance updates.
+robot_pose_cache_size: 200
+track_point_frame_id: "base_link"
+track_point_x: 2.5
+track_point_y: 0.0
+track_point_z: 0.0
