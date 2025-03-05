@@ -302,12 +302,6 @@
   <!-- ========================= -->
   <!--      Insulation ROI       -->
   <!-- ========================= -->
-  <!-- Insulation region of interest -->
-  <!-- <node pkg="insul_monit" type="insulation_roi_node" name="insulation_roi" output="screen">
-    <rosparam>
-      N: 5
-    </rosparam>
-  </node> -->
 
   <!-- Insulation region of interest -->
   <!-- <node pkg="insul_roi" type="insul_roi.py" name="insul_roi" output="screen">
@@ -419,5 +413,5 @@
               camera_link camera_aligned_depth_to_color_frame" />
 
   <!-- RViz -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d /root/capstone/catkin_ws/src/configs/insul_monit.rviz" />
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find insul_monit)/rviz/insul_monit.rviz" />
 </launch>

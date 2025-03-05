@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   rospy
   std_srvs
+  message_generation
 )
 
 find_package(PCL REQUIRED)

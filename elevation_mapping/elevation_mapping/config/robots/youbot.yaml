@@ -8,7 +8,7 @@ input_sources:
       type: perfect
 
 
-map_frame_id: "base_link"
+map_frame_id: "map"
 robot_base_frame_id: "base_link"
 robot_pose_with_covariance_topic: "" # Leaving this empty skipps pose covariance updates.
 robot_pose_cache_size: 200

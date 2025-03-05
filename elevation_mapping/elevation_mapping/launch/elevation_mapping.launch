@@ -2,14 +2,14 @@
 
   <!-- Elevation mapping velodyne node -->
   <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
-    <rosparam command="load" file="$(find elevation_mapping)/config/robots/youbot.yaml" />odom
+    <rosparam command="load" file="$(find elevation_mapping)/config/robots/youbot.yaml" />
     <rosparam command="load" file="$(find elevation_mapping)/config/elevation_maps/treehouse_map.yaml" />
     <rosparam command="load" file="$(find elevation_mapping)/config/postprocessing/postprocessor_pipeline.yaml" />
   </node>
 
   <!-- Elevation mapping depth node-->
   <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping_depth" output="screen">
-    <rosparam command="load" file="$(find elevation_mapping)/config/robots/youbot_depth.yaml" />odom
+    <rosparam command="load" file="$(find elevation_mapping)/config/robots/youbot_depth.yaml" />
     <rosparam command="load" file="$(find elevation_mapping)/config/elevation_maps/treehouse_map_depth.yaml" />
     <rosparam command="load" file="$(find elevation_mapping)/config/postprocessing/postprocessor_pipeline.yaml" />
   </node>
@@ -21,7 +21,7 @@
   </node>
 
   <!-- Setup a transform between the world and the robot -->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_robot" args="0 0 0 0 0 0 /map /base_link"/>
+  <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_robot" args="0 0 0 0 0 0 /map /base_link"/> -->
 
   <!-- Launch visualizations for the resulting elevation map -->
   <include file="$(find elevation_mapping_demos)/launch/visualization.launch" />
