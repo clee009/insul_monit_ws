@@ -390,7 +390,7 @@
         args="0 0 0 0 0 0 odom base_link" />
 
   <!-- Odom publisher -->
-  <node name="odom_publisher" pkg="odom_publisher" type="odom_publisher.py" output="screen"/>
+  <!-- <node name="odom_publisher" pkg="odom_publisher" type="odom_publisher.py" output="screen"/> -->
 
   <!-- Camera Transformations -->
   <node pkg="tf2_ros" type="static_transform_publisher" name="tf_camera_link_to_depth_frame"
