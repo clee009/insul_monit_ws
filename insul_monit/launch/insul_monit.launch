@@ -108,7 +108,7 @@
     <remap from="~output" to="/crop_box/roi/output"/>
     <rosparam>
       min_x: 0
-      max_x: 1.97
+      max_x: 1000.0
       min_y: 0
       max_y: 1.47
       min_z: 0.30
@@ -174,7 +174,7 @@
   <!--      Wall filters       -->
   <!-- ======================= -->
   <!-- Wall detector service -->
-  <node pkg="insul_monit" type="wall_detector_service" name="wall_detector_service" output="screen">
+  <!-- <node pkg="insul_monit" type="wall_detector_service" name="wall_detector_service" output="screen">
     <remap from="/input" to="/voxel_grid/roi/output"/>
     <rosparam>
       tolerance: 0.05
@@ -182,26 +182,30 @@
       max_angle_tolerance: 15
       min_points_wall: 10
     </rosparam>
-  </node>
+  </node> -->
 
   <!-- Call wall detector service once-->
   <!-- <node pkg="insul_monit" type="wall_detector_client.py" name="wall_detector_client" output="screen"/> -->
 
   <!-- Wall filter (velodyne) -->
-  <node pkg="insul_monit" type="wall_filter_node" name="wall_filter_velodyne" output="screen">
+  <!-- <node pkg="insul_monit" type="wall_filter_node" name="wall_filter_velodyne" output="screen">
     <remap from="/input" to="/voxel_grid/velodyne/output"/>
     <remap from="/output" to="/wall_filter/velodyne/output"/>
     <rosparam>
       tolerance: 0.05
     </rosparam>
-  </node>
+  </node> -->
 
   <!-- Wall filter (roi) -->
-  <node pkg="insul_monit" type="wall_filter_node" name="wall_filter_roi" output="screen">
+  <node pkg="insul_monit" type="wall_filter_node_v2" name="wall_filter_roi" output="screen">
     <remap from="/input" to="/voxel_grid/roi/output"/>
     <remap from="/output" to="/wall_filter/roi/output"/>
     <rosparam>
-      tolerance: 0.1
+      max_x_tolerance: 0.10
+      ransac_distance_threshold: 0.05
+      filtering_distance_threshold: 0.05
+      max_angle_tolerance: 35
+      min_points_wall: 10
     </rosparam>
   </node>
 
@@ -354,7 +358,7 @@
     <remap from="/output" to="/roi" />
     <rosparam>
       moving_average_window: 10
-      centroid_bias: 1.0
+      centroid_bias: 0.9
       cloud_size: 20
       timeout: 1.0
     </rosparam>
@@ -396,6 +400,8 @@
       y_min: 0.355
       y_max: 0.724
       fill_threshold: 0.3
+      target_x_threshold: 0.05
+      target_y_threshold: 0.10
     </rosparam>
   </node>
 
@@ -404,8 +410,8 @@
   <!--      Static transforms       -->
   <!-- =========================== -->
   <!-- Static transform from map to cavity-->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf_map_to_cavity"
-        args="0.510 0.889 -0.05 0 0 0 map cavity" />
+  <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf_map_to_cavity"
+        args="0.510 0.889 -0.05 0 0 0 map cavity" /> -->
 
   <!-- RViz -->
   <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find insul_monit)/rviz/insul_monit.rviz" /> -->

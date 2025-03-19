@@ -157,6 +157,7 @@ add_executable(init_map_client src/init_map_client.cpp)
 add_executable(insulation_roi_node_v3 src/insulation_roi_v3.cpp)
 add_executable(wall_detector_service src/wall_detector_service.cpp)
 add_executable(wall_filter_node src/wall_filter.cpp)
+add_executable(wall_filter_node_v2 src/wall_filter_v2.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -219,6 +220,11 @@ ${PCL_LIBRARIES}
 )
 
 target_link_libraries(wall_filter_node
+${catkin_LIBRARIES}
+${PCL_LIBRARIES}
+)
+
+target_link_libraries(wall_filter_node_v2
 ${catkin_LIBRARIES}
 ${PCL_LIBRARIES}
 )

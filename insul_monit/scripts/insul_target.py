@@ -17,6 +17,8 @@ class InsulationTarget:
         self.y_max_world = rospy.get_param("~y_max", 10.0)  # Max y in meters
         self.fill_threshold = rospy.get_param("~fill_threshold", 0.3)  # Percentage of a row of cells that need to be filled for a given depth to be considered filled
         self.max_cost = rospy.get_param("~max_cost", 200)  # Max cost for filled cells
+        self.target_x_threshold = rospy.get_param("~target_x_threshold", 0.05)  # Min x displacement required to publish target
+        self.target_y_threshold = rospy.get_param("~target_y_threshold", 0.10)  # Min y displacement required to publish target
 
         # Subscribers
         self.costmap_sub = rospy.Subscriber("/input", GridMap, self.costmap_callback)
@@ -51,7 +53,7 @@ class InsulationTarget:
             return
 
         centroid_x, centroid_y, centroid_z = self.latest_centroid
-        rospy.loginfo(f"{centroid_x}, {centroid_y}")
+        # rospy.loginfo(f"{centroid_x}, {centroid_y}")
 
         # Extract metadata
         width = msg.data[0].layout.dim[0].size
@@ -94,6 +96,7 @@ class InsulationTarget:
             masked_cost_map = np.ma.masked_invalid(subset_cost_map)
             min_cost_idx = np.argmin(masked_cost_map)
             _, filled_depth = np.unravel_index(min_cost_idx, masked_cost_map.shape)
+            # filled_depth = 0
         rospy.loginfo(f"filled depth: '{filled_depth}'")
 
         # Publish target message
@@ -102,7 +105,22 @@ class InsulationTarget:
         target_msg.x = x_origin + length_x/2 - filled_depth*resolution - self.latest_x_offset - centroid_x
         target_msg.y = y_origin + length_y/2 - (y_min_idx + y_max_idx)/2*resolution - centroid_y
         target_msg.z = 0.0
-        self.target_pub.publish(target_msg)
+
+        if (filled_indices[0].size != 0) and ((abs(target_msg.x) > self.target_x_threshold) or (abs(target_msg.y) > self.target_y_threshold)):
+            self.target_pub.publish(target_msg)
+        elif (filled_indices[0].size == 0) and (target_msg.x > 0) and (target_msg.x > 2*self.target_x_threshold):
+            self.target_pub.publish(target_msg)
+        elif (filled_indices[0].size == 0) and (target_msg.x < 0) and (abs(target_msg.x) > self.target_x_threshold):
+            self.target_pub.publish(target_msg)
+        elif (filled_indices[0].size == 0) and (abs(target_msg.y) > self.target_y_threshold):
+            target_msg.x = 0.0
+            self.target_pub.publish(target_msg)
+        else:
+            target_msg.x = 0.0
+            target_msg.y = 0.0
+            target_msg.z = 0.0
+            self.target_pub.publish(target_msg)
+        
 
         # Publish arrow marker at centroid
         marker = Marker()
