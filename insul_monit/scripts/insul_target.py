@@ -47,7 +47,7 @@ class InsulationTarget:
     def costmap_callback(self, msg):
         """Processes cost map data along with the latest centroid info."""
         if self.latest_centroid is None or self.latest_x_offset is None:
-            rospy.logwarn("No CentroidInfo data received!")
+            # rospy.logwarn("No CentroidInfo data received!")
             return
 
         centroid_x, centroid_y, centroid_z = self.latest_centroid
@@ -96,15 +96,6 @@ class InsulationTarget:
             _, filled_depth = np.unravel_index(min_cost_idx, masked_cost_map.shape)
         rospy.loginfo(f"filled depth: '{filled_depth}'")
 
-        # masked_cost_map = np.ma.masked_invalid(subset_cost_map)
-        # # rospy.loginfo(masked_cost_map)
-        # masked_cost_map = masked_cost_map[:, filled_depth:]
-        # # rospy.loginfo(masked_cost_map)
-        # min_cost_idx = np.argmin(masked_cost_map)
-        # # rospy.loginfo(min_cost_idx)
-        # _, min_cost_depth = np.unravel_index(min_cost_idx, masked_cost_map.shape)
-        # # rospy.loginfo(f"min cost depth: '{min_cost_depth}'")
-
         # Publish target message
         # rospy.loginfo(self.latest_x_offset)
         target_msg = Point()
@@ -115,7 +106,7 @@ class InsulationTarget:
 
         # Publish arrow marker at centroid
         marker = Marker()
-        marker.header.frame_id = "base_link"
+        marker.header.frame_id = "cavity"
         marker.header.stamp = rospy.Time.now()
         marker.ns = "target_arrow"
         marker.id = 0
@@ -141,11 +132,12 @@ class InsulationTarget:
         self.marker_pub.publish(marker)
 
         # Convert back to 1D list for ROS message
-        new_data = subset_cost_map.flatten().tolist()
+        new_data = subset_cost_map.flatten().astype(np.float32).tolist()
 
         # Create new OccupancyGrid message
         new_msg = deepcopy(msg)
         new_msg.data[0].data = new_data
+        
 
         # Publish the new map
         self.costmap_pub.publish(new_msg)

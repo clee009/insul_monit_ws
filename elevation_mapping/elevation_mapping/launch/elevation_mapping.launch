@@ -8,17 +8,17 @@
   </node>
 
   <!-- Elevation mapping depth node-->
-  <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping_depth" output="screen">
+  <!-- <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping_depth" output="screen">
     <rosparam command="load" file="$(find elevation_mapping)/config/robots/youbot_depth.yaml" />
     <rosparam command="load" file="$(find elevation_mapping)/config/elevation_maps/treehouse_map_depth.yaml" />
     <rosparam command="load" file="$(find elevation_mapping)/config/postprocessing/postprocessor_pipeline.yaml" />
-  </node>
+  </node> -->
 
   <!-- Initialize map server -->
-  <node name="init_map_server" pkg="insul_monit" type="init_map_server" output="screen">
+  <!-- <node name="init_map_server" pkg="insul_monit" type="init_map_server" output="screen">
     <remap from="/input" to="/voxel_grid/depth/output" />
     <remap from="/output" to="/init_map/output" />
-  </node>
+  </node> -->
 
   <!-- Setup a transform between the world and the robot -->
   <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="world_to_robot" args="0 0 0 0 0 0 /map /base_link"/> -->
@@ -27,6 +27,6 @@
   <include file="$(find elevation_mapping_demos)/launch/visualization.launch" />
 
   <!-- Launch RViz with the demo configuration -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find elevation_mapping)/rviz/elevation_mapping.rviz" />
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find elevation_mapping)/rviz/elevation_mapping.rviz" /> -->
 
 </launch>

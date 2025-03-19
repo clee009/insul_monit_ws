@@ -13,6 +13,7 @@
 #include <deque>
 #include <insul_monit/CentroidInfo.h>
 #include <std_msgs/Header.h>
+#include <pcl/filters/passthrough.h>
 
 // Structure to store computed data for each message
 struct MessageData {
@@ -61,7 +62,7 @@ void cloudCallback(const sensor_msgs::PointCloud2ConstPtr& input)
         // Publish CentroidInfo message
         insul_monit::CentroidInfo centroid_info_msg;
         centroid_info_msg.header.stamp = ros::Time::now();
-        centroid_info_msg.header.frame_id = "base_link";
+        centroid_info_msg.header.frame_id = "cavity";
         centroid_info_msg.biased_centroid.x = NAN;
         centroid_info_msg.biased_centroid.y = NAN;
         centroid_info_msg.biased_centroid.z = NAN;
@@ -77,7 +78,7 @@ void cloudCallback(const sensor_msgs::PointCloud2ConstPtr& input)
         // Publish CentroidInfo message
         insul_monit::CentroidInfo centroid_info_msg;
         centroid_info_msg.header.stamp = ros::Time::now();
-        centroid_info_msg.header.frame_id = "base_link";
+        centroid_info_msg.header.frame_id = "cavity";
         centroid_info_msg.biased_centroid.x = NAN;
         centroid_info_msg.biased_centroid.y = NAN;
         centroid_info_msg.biased_centroid.z = NAN;
@@ -90,6 +91,20 @@ void cloudCallback(const sensor_msgs::PointCloud2ConstPtr& input)
     } else {
         last_valid_time = ros::Time::now();
     }
+
+    // pcl::PointXYZ minp, maxp;
+    // pcl::getMinMax3D (*cloud, minp, maxp);
+    // pcl::PassThrough<pcl::PointXYZ> pass;
+    // pass.setInputCloud(cloud);
+    // pass.setFilterFieldName("x");
+    // pass.setFilterLimits(0.0, maxp.x - 0.05);
+    // pass.filter(*cloud);
+
+    // pass.setInputCloud(cloud);
+    // pass.setFilterFieldName("y");
+    // pass.setFilterLimits(-0.5, -0.5);
+    // pass.filter(*cloud);
+
     
     // Compute 2D centroid (using x and y)
     Eigen::Vector4f centroid;
@@ -267,7 +282,7 @@ void cloudCallback(const sensor_msgs::PointCloud2ConstPtr& input)
     // Publish CentroidInfo message
     insul_monit::CentroidInfo centroid_info_msg;
     centroid_info_msg.header.stamp = ros::Time::now();
-    centroid_info_msg.header.frame_id = "base_link";
+    centroid_info_msg.header.frame_id = "cavity";
     centroid_info_msg.biased_centroid.x = biased_centroid_x;
     centroid_info_msg.biased_centroid.y = avg_centroid_y;
     centroid_info_msg.biased_centroid.z = 0;

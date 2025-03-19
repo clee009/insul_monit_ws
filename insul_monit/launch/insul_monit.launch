@@ -18,12 +18,12 @@
   <!--      Depth camera to point cloud      -->
   <!-- ===================================== -->
   <!-- Realsense: Depth image to XYZ point cloud -->
-  <node pkg="nodelet" type="nodelet" name="depth_to_point_cloud"
+  <!-- <node pkg="nodelet" type="nodelet" name="depth_to_point_cloud"
         args="load depth_image_proc/point_cloud_xyz nodelet_manager">
     <remap from="camera_info" to="/camera/aligned_depth_to_color/camera_info"/>
     <remap from="image_rect" to="/camera/aligned_depth_to_color/image_raw"/>
     <remap from="points" to="/camera/depth/points"/>
-  </node>
+  </node> -->
 
   <!-- Xtion: Depth image to XYZ point cloud-->
   <!-- <node pkg="nodelet" type="nodelet" name="depth_to_point_cloud"
@@ -55,34 +55,34 @@
   <!--      Crop box filters       -->
   <!-- =========================== -->
   <!-- Crop box (depth camera)-->
-  <node pkg="nodelet" type="nodelet" name="crop_box_depth" args="load pcl/CropBox nodelet_manager">
+  <!-- <node pkg="nodelet" type="nodelet" name="crop_box_depth" args="load pcl/CropBox nodelet_manager">
     <remap from="~input" to="/camera/depth/points"/>
     <remap from="~output" to="/crop_box/depth/output"/>
     <rosparam>
-      min_x: 1
-      max_x: 3.5
-      min_y: -1
-      max_y: 1
+      min_x: 0
+      max_x: 1.87
+      min_y: 0
+      max_y: 1.47
       min_z: 0
-      max_z: 0.45
-      input_frame: base_link
-      output_frame: base_link
+      max_z: 0.25
+      input_frame: cavity
+      output_frame: cavity
     </rosparam>
-  </node>
+  </node> -->
 
   <!-- Crop box (filtered depth) -->
   <!-- <node pkg="nodelet" type="nodelet" name="crop_box_filtered_depth" args="load pcl/CropBox nodelet_manager">
     <remap from="~input" to="/camera/depth/filtered/points"/>
     <remap from="~output" to="/crop_box/filtered/output"/>
     <rosparam>
-      min_x: 1
-      max_x: 3.5
-      min_y: -1
-      max_y: 1
+      min_x: 0
+      max_x: 1.87
+      min_y: 0
+      max_y: 1.47
       min_z: 0
-      max_z: 0.45
-      input_frame: base_link
-      output_frame: base_link
+      max_z: 0.25
+      input_frame: cavity
+      output_frame: cavity
     </rosparam>
   </node> -->
 
@@ -91,14 +91,14 @@
     <remap from="~input" to="/velodyne_points"/>
     <remap from="~output" to="/crop_box/velodyne/output"/>
     <rosparam>
-      min_x: 1
-      max_x: 3.5
-      min_y: -1
-      max_y: 1
+      min_x: 0
+      max_x: 1.87
+      min_y: 0
+      max_y: 1.47
       min_z: 0
-      max_z: 0.45
-      input_frame: base_link
-      output_frame: base_link
+      max_z: 0.25
+      input_frame: cavity
+      output_frame: cavity
     </rosparam>
   </node>
 
@@ -107,14 +107,14 @@
     <remap from="~input" to="/velodyne_points"/>
     <remap from="~output" to="/crop_box/roi/output"/>
     <rosparam>
-      min_x: 1.2
-      max_x: 3
-      min_y: -1
-      max_y: 1
-      min_z: 0.45
-      max_z: 0.65
-      input_frame: base_link
-      output_frame: base_link
+      min_x: 0
+      max_x: 1.97
+      min_y: 0
+      max_y: 1.47
+      min_z: 0.30
+      max_z: 0.60
+      input_frame: cavity
+      output_frame: cavity
     </rosparam>
   </node>
 
@@ -123,16 +123,16 @@
   <!--      Voxel grid filters       -->
   <!-- ============================= -->
   <!-- Voxel grid (depth)-->
-  <node pkg="nodelet" type="nodelet" name="voxel_grid_depth" args="load pcl/VoxelGrid nodelet_manager">
+  <!-- <node pkg="nodelet" type="nodelet" name="voxel_grid_depth" args="load pcl/VoxelGrid nodelet_manager">
     <remap from="~input" to="/crop_box/depth/output"/>
     <remap from="~output" to="/voxel_grid/depth/output"/>
     <rosparam>
       filter_limit_negative: False
-      input_frame: base_link
-      output_frame: base_link
+      input_frame: cavity
+      output_frame: cavity
       leaf_size: 0.05
     </rosparam>
-  </node>
+  </node> -->
 
   <!-- Voxel grid (filtered depth)-->
   <!-- <node pkg="nodelet" type="nodelet" name="voxel_grid_filtered" args="load pcl/VoxelGrid nodelet_manager">
@@ -140,8 +140,8 @@
     <remap from="~output" to="/voxel_grid/filtered/output"/>
     <rosparam>
       filter_limit_negative: False
-      input_frame: base_link
-      output_frame: base_link
+      input_frame: cavity
+      output_frame: cavity
       leaf_size: 0.05
     </rosparam>
   </node> -->
@@ -152,8 +152,8 @@
     <remap from="~output" to="/voxel_grid/roi/output"/>
     <rosparam>
       filter_limit_negative: False
-      input_frame: base_link
-      output_frame: base_link
+      input_frame: cavity
+      output_frame: cavity
       leaf_size: 0.05
     </rosparam>
   </node>
@@ -164,12 +164,46 @@
     <remap from="~output" to="/voxel_grid/velodyne/output"/>
     <rosparam>
       filter_limit_negative: False
-      input_frame: base_link
-      output_frame: base_link
+      input_frame: cavity
+      output_frame: cavity
       leaf_size: 0.05
     </rosparam>
   </node>
 
+  <!-- ======================= -->
+  <!--      Wall filters       -->
+  <!-- ======================= -->
+  <!-- Wall detector service -->
+  <node pkg="insul_monit" type="wall_detector_service" name="wall_detector_service" output="screen">
+    <remap from="/input" to="/voxel_grid/roi/output"/>
+    <rosparam>
+      tolerance: 0.05
+      ransac_distance_threshold: 0.02
+      max_angle_tolerance: 15
+      min_points_wall: 10
+    </rosparam>
+  </node>
+
+  <!-- Call wall detector service once-->
+  <!-- <node pkg="insul_monit" type="wall_detector_client.py" name="wall_detector_client" output="screen"/> -->
+
+  <!-- Wall filter (velodyne) -->
+  <node pkg="insul_monit" type="wall_filter_node" name="wall_filter_velodyne" output="screen">
+    <remap from="/input" to="/voxel_grid/velodyne/output"/>
+    <remap from="/output" to="/wall_filter/velodyne/output"/>
+    <rosparam>
+      tolerance: 0.05
+    </rosparam>
+  </node>
+
+  <!-- Wall filter (roi) -->
+  <node pkg="insul_monit" type="wall_filter_node" name="wall_filter_roi" output="screen">
+    <remap from="/input" to="/voxel_grid/roi/output"/>
+    <remap from="/output" to="/wall_filter/roi/output"/>
+    <rosparam>
+      tolerance: 0.1
+    </rosparam>
+  </node>
 
   <!-- ========================================= -->
   <!--      Point cloud processing filters       -->
@@ -269,13 +303,13 @@
     </rosparam>
   </node> -->
 
-  <!-- Persistent filter height (velodyne) -->
+  <!-- Height filter (velodyne) -->
   <node pkg="insul_monit" type="persistent_filter_height_node" name="height_filter" output="screen">
     <remap from="/input" to="/voxel_grid/velodyne/output" />
     <remap from="/output" to="/height_filter/velodyne/output" />
     <rosparam>
-      N: 8
-      epsilon: 0.01
+      N: 5
+      epsilon: 0.05
     </rosparam>
   </node>
 
@@ -316,11 +350,11 @@
 
   <!-- Insulation region of interest (w/ spread) -->
   <node pkg="insul_monit" type="insulation_roi_node_v3" name="insulation_roi" output="screen">
-    <remap from="/input" to="/voxel_grid/roi/output" />
+    <remap from="/input" to="/wall_filter/roi/output" />
     <remap from="/output" to="/roi" />
     <rosparam>
       moving_average_window: 10
-      centroid_bias: 0.6
+      centroid_bias: 1.0
       cloud_size: 20
       timeout: 1.0
     </rosparam>
@@ -333,7 +367,7 @@
     <rosparam>
       layer: elevation
       min_height: 0.0
-      max_height: 0.38
+      max_height: 0.22
       wt_height: 1
       wt_dist: 100
       max_cost: 200
@@ -341,26 +375,26 @@
   </node>
 
   <!-- Insulation cost map (depth) -->
-  <node pkg="insul_monit" type="insul_cost_map.py" name="insulation_cost_map_depth" output="screen">
+  <!-- <node pkg="insul_monit" type="insul_cost_map.py" name="insulation_cost_map_depth" output="screen">
     <remap from="/input" to="/elevation_mapping_depth/elevation_map" />
     <remap from="/output" to="/insulation_cost_map/depth" />
     <rosparam>
       layer: elevation
       min_height: 0.0
-      max_height: 0.38
+      max_height: 0.24
       wt_height: 1
       wt_dist: 100
       max_cost: 200
     </rosparam>
-  </node>
+  </node> -->
 
   <!-- Insulation target -->
   <node pkg="insul_monit" type="insul_target.py" name="insulation_target" output="screen">
     <remap from="/input" to="/insulation_cost_map/velodyne" />
     <remap from="/centroid_info" to="/centroid_info" />
     <rosparam>
-      y_min: -0.3
-      y_max: 0.3
+      y_min: 0.355
+      y_max: 0.724
       fill_threshold: 0.3
     </rosparam>
   </node>
@@ -369,49 +403,10 @@
   <!-- =========================== -->
   <!--      Static transforms       -->
   <!-- =========================== -->
-  <!-- Static transform from velodyne to camera_link-->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf_velodyne_to_camera_link"
-        args="-0.06 0.051 0.26 0 0 0 velodyne camera_link" />
-
-  <!-- Static transform from base_link to velodyne -->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf_base_to_velodyne"
-        args="0 0 0.45 0 0 0 base_link velodyne" />
-  
-  <!-- Static transform from base_link to camera_link -->
-  <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf_base_to_depth"
-        args="0 0 0.8 0 0 0 base_link camera_link" /> -->
-
-  <!-- Static transform from map to odom -->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf_map_to_odom"
-        args="0 0 0 0 0 0 map odom" />
-
-  <!-- Static transform from odom to base_link -->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf_odom_to_base_link"
-        args="0 0 0 0 0 0 odom base_link" />
-
-  <!-- Odom publisher -->
-  <!-- <node name="odom_publisher" pkg="odom_publisher" type="odom_publisher.py" output="screen"/> -->
-
-  <!-- Camera Transformations -->
-  <node pkg="tf2_ros" type="static_transform_publisher" name="tf_camera_link_to_depth_frame"
-        args="0 0 0 0 0 0 1 camera_link camera_depth_frame" />
-  
-  <node pkg="tf2_ros" type="static_transform_publisher" name="tf_depth_frame_to_optical"
-        args="0 0 0 -0.5 0.5 -0.5 0.5 camera_depth_frame camera_depth_optical_frame" />
-
-  <node pkg="tf2_ros" type="static_transform_publisher" name="tf_camera_link_to_color_frame"
-        args="-0.00033525878097862005 0.014969978481531143 0.00002361660881433636 
-              0.0067305536940693855 -0.0011737466556951404 0.004327503032982349 0.9999672770500183 
-              camera_link camera_color_frame" />
-
-  <node pkg="tf2_ros" type="static_transform_publisher" name="tf_aligned_depth_to_color"
-        args="0 0 0 -0.5 0.5 -0.5 0.5 camera_aligned_depth_to_color_frame camera_color_optical_frame" />
-
-  <node pkg="tf2_ros" type="static_transform_publisher" name="tf_camera_link_to_aligned_depth"
-        args="-0.00033525878097862005 0.014969978481531143 0.00002361660881433636 
-              0.0067305536940693855 -0.0011737466556951404 0.004327503032982349 0.9999672770500183 
-              camera_link camera_aligned_depth_to_color_frame" />
+  <!-- Static transform from map to cavity-->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf_map_to_cavity"
+        args="0.510 0.889 -0.05 0 0 0 map cavity" />
 
   <!-- RViz -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find insul_monit)/rviz/insul_monit.rviz" />
+  <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find insul_monit)/rviz/insul_monit.rviz" /> -->
 </launch>

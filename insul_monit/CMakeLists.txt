@@ -81,6 +81,7 @@ add_message_files(
 generate_messages(
   DEPENDENCIES
   geometry_msgs
+  std_msgs
 )
 
 ################################################
@@ -117,6 +118,7 @@ catkin_package(
 #  LIBRARIES insul_monit
 #  CATKIN_DEPENDS pcl_conversions pcl_ros roscpp sensor_msgs
 #  DEPENDS system_lib
+
 )
 
 ###########
@@ -153,6 +155,8 @@ add_executable(insulation_roi_node_v2 src/insulation_roi_v2.cpp)
 add_executable(init_map_server src/init_map_server.cpp)
 add_executable(init_map_client src/init_map_client.cpp)
 add_executable(insulation_roi_node_v3 src/insulation_roi_v3.cpp)
+add_executable(wall_detector_service src/wall_detector_service.cpp)
+add_executable(wall_filter_node src/wall_filter.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -163,6 +167,7 @@ add_executable(insulation_roi_node_v3 src/insulation_roi_v3.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(insulation_roi_node_v3 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(persistent_filter_node
@@ -208,6 +213,16 @@ ${catkin_LIBRARIES}
 ${PCL_LIBRARIES}
 )
 
+target_link_libraries(wall_detector_service
+${catkin_LIBRARIES}
+${PCL_LIBRARIES}
+)
+
+target_link_libraries(wall_filter_node
+${catkin_LIBRARIES}
+${PCL_LIBRARIES}
+)
+
 #############
 ## Install ##
 #############
@@ -220,6 +235,8 @@ ${PCL_LIBRARIES}
 catkin_install_python(PROGRAMS
   scripts/insul_cost_map.py
   scripts/insul_target.py
+  scripts/basic_base_controller.py
+  scripts/wall_detector_client.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
